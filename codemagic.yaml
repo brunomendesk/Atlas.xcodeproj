@@ -1,51 +1,31 @@
-workflows:
-  ios-build:
-    name: Build iOS App
-    max_build_duration: 120
-    instance_type: mac_mini_m1
+name: Criar Projeto Xcode
 
-    environment:
-      vars:
-        xcodebuild \
-  -project $XCODE_PROJECT \
-        XCODE_SCHEME: "Atlas"
-        BUNDLE_ID: "com.seuapp.atlas"
-      xcode: latest
+on: push
 
-    triggering:
-      events:
-        - push
-        - tag
-      branch_patterns:
-        - pattern: "*"
-          include: true
-          source: true
+jobs:
+  create-xcodeproj:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v2
 
-    scripts:
-      - name: Instalar Dependências
-        script: |
-          gem install cocoapods
-          if [ -d "ios" ]; then cd ios && pod install --verbose && cd ..; fi
+      - name: Criar diretório do projeto
+        run: |
+          mkdir -p Atlas
+          cd Atlas
+          swift package init --type executable
+          cd ..
 
-      - name: Criar Arquivo Archive
-        script: |
-          xcodebuild \
-            -project $XCODE_PROJECT \
-            -scheme $XCODE_SCHEME \
-            -sdk iphoneos \
-            -configuration Release \
-            archive \
-            -archivePath $HOME/build/Atlas.xcarchive \
-            CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+      - name: Criar Projeto Xcode
+        run: |
+          cd Atlas
+          swift package generate-xcodeproj
+          cd ..
 
-      - name: Exportar IPA
-        script: |
-          xcodebuild \
-            -exportArchive \
-            -archivePath $HOME/build/Atlas.xcarchive \
-            -exportPath $HOME/build \
-            -exportOptionsPlist codemagic_exportOptions.plist \
-            CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
-
-    artifacts:
-      - build/*.ipa
+      - name: Enviar para o GitHub
+        run: |
+          git config --global user.email "seuemail@example.com"
+          git config --global user.name "SeuNome"
+          git add Atlas/Atlas.xcodeproj
+          git commit -m "Criando projeto Xcode automaticamente"
+          git push
