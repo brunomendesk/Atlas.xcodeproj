@@ -1,8 +1,31 @@
-    scripts:
-      - name: Criar Projeto Xcode
-        script: |
+name: Criar Projeto Xcode
+
+on: push
+
+jobs:
+  create-xcodeproj:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v2
+
+      - name: Criar diretório do projeto
+        run: |
           mkdir Atlas
           cd Atlas
           swift package init --type executable
-          xcodebuild -create-xcodeproj Atlas.xcodeproj
           cd ..
+
+      - name: Criar Projeto Xcode
+        run: |
+          cd Atlas
+          swift package generate-xcodeproj
+          cd ..
+
+      - name: Enviar para o GitHub
+        run: |
+          git config --global user.email "seuemail@example.com"
+          git config --global user.name "SeuNome"
+          git add Atlas/Atlas.xcodeproj
+          git commit -m "Criando projeto Xcode automaticamente"
+          git push
