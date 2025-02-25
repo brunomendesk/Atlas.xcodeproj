@@ -5,4 +5,4 @@
           cd Atlas
           swift package init --type executable
           xcodebuild -create-xcodeproj Atlas.xcodeproj
-          cd ..
+          cd .
