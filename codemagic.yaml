@@ -1,4 +1,4 @@
-scripts:
+    scripts:
       - name: Criar Projeto Xcode
         script: |
           mkdir Atlas
