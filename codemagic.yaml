@@ -11,7 +11,7 @@ jobs:
 
       - name: Criar diretório do projeto
         run: |
-          mkdir Atlas
+          mkdir -p Atlas
           cd Atlas
           swift package init --type executable
           cd ..
