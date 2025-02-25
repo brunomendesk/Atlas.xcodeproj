@@ -1,0 +1,8 @@
+    scripts:
+      - name: Criar Projeto Xcode
+        script: |
+          mkdir Atlas
+          cd Atlas
+          swift package init --type executable
+          xcodebuild -create-xcodeproj Atlas.xcodeproj
+          cd ..
