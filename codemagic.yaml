@@ -6,7 +6,8 @@ workflows:
 
     environment:
       vars:
-        XCODE_PROJECT: "Atlas/Atlas.xcodeproj"
+        xcodebuild \
+  -project $XCODE_PROJECT \
         XCODE_SCHEME: "Atlas"
         BUNDLE_ID: "com.seuapp.atlas"
       xcode: latest
